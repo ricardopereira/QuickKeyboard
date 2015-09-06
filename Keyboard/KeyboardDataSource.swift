@@ -31,4 +31,19 @@ class KeyboardDataSource: NSObject, UITableViewDataSource {
         return objects.count
     }
     
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            // Your delete code here
+            println("Delete")
+            let realm = Realm()
+            
+            tableView.beginUpdates()
+            realm.write {
+                realm.delete(self.items[indexPath.row])
+            }
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+            tableView.endUpdates()
+        }
+    }
+    
 }

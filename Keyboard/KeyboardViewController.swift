@@ -17,10 +17,13 @@ class KeyboardViewController: UIInputViewController {
     var notificationToken: NotificationToken?
     
     // UI
+    var toolBarView: UIView!
+    var toolBarTopConstraint: NSLayoutConstraint!
     let nextKeyboardButton = UIButton.buttonWithType(.Custom) as! UIButton
     let newStringButton = UIButton.buttonWithType(.Custom) as! UIButton
     let editButton = UIButton.buttonWithType(.Custom) as! UIButton
     let settingsButton = UIButton.buttonWithType(.Custom) as! UIButton
+    let textField = UITextField()
 
     override func updateViewConstraints() {
         super.updateViewConstraints()
@@ -34,8 +37,11 @@ class KeyboardViewController: UIInputViewController {
         tableView.delegate = self
         tableView.dataSource = dataSource
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: KeyboardDataSource.CellIdentifier)
+        //tableView.setEditing(true, animated: true)
         
         setupUI()
+        
+        toolBarView.backgroundColor = UIColor.blueColor()
         
         // Set Realm notification block
         notificationToken = Realm().addNotificationBlock { [unowned self] note, realm in
@@ -47,7 +53,9 @@ class KeyboardViewController: UIInputViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-
+        toolBarView.hidden = true
+        toolBarTopConstraint.constant = 0
+        view.layoutIfNeeded()
     }
     
     func setupColors(appearence: UIKeyboardAppearance) {
@@ -81,14 +89,19 @@ class KeyboardViewController: UIInputViewController {
     // MARK: - Actions
     
     func didTouchNextKeyboardButton() {
+        println("didTouchNextKeyboardButton")
         advanceToNextInputMode()
     }
     
     func didTouchNewButton(Sender: AnyObject) {
+        println("didTouchNewButton")
+        toolBarView.hidden = true
+        toolBarTopConstraint.constant = 36.0
+        
         let realm = Realm()
         
         realm.write {
-            realm.create(QuickString.self, value: ["", NSDate()])
+            realm.create(QuickString.self, value: ["ricardopereira.eu@gmail.com ", NSDate()])
         }
     }
 
@@ -111,86 +124,102 @@ extension KeyboardViewController: UITableViewDelegate {
         
         cell.textLabel?.text = dataSource.items[indexPath.row].value
     }
-    
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            let realm = Realm()
-            
-            realm.write {
-                realm.delete(self.dataSource.items[indexPath.row])
-            }
-        }
-    }
 
 }
 
 extension KeyboardViewController {
     
     func setupUI() {
+        // Table View
         tableView.setTranslatesAutoresizingMaskIntoConstraints(false)
         view.addSubview(tableView)
         
-        let topBarHeight: CGFloat = 36.0
-        let topBarView = UIView(frame: CGRectMake(0, 0, self.view.frame.width, topBarHeight))
-        topBarView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        topBarView.backgroundColor = view.backgroundColor
-        view.addSubview(topBarView)
+        // Bars
+        let barHeight: CGFloat = 36.0
         
+        let menuBarView = UIView(frame: CGRectMake(0, 0, self.view.frame.width, barHeight))
+        menuBarView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        menuBarView.backgroundColor = view.backgroundColor
+        view.addSubview(menuBarView)
+        
+        toolBarView = UIView(frame: CGRectMake(0, 0, self.view.frame.width, barHeight))
+        toolBarView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        toolBarView.backgroundColor = view.backgroundColor
+        view.addSubview(toolBarView)
+        
+        // Buttons
         nextKeyboardButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         nextKeyboardButton.setTitle("Next keyboard", forState: .Normal)
         nextKeyboardButton.addTarget(self, action: Selector("didTouchNextKeyboardButton:"), forControlEvents: .TouchUpInside)
-        topBarView.addSubview(nextKeyboardButton)
+        menuBarView.addSubview(nextKeyboardButton)
         
         newStringButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         newStringButton.setTitle("New", forState: .Normal)
         newStringButton.addTarget(self, action: Selector("didTouchNewButton:"), forControlEvents: .TouchUpInside)
-        topBarView.addSubview(newStringButton)
+        menuBarView.addSubview(newStringButton)
         
         /*
         editButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         editButton.setTitle("Edit", forState: .Normal)
         editButton.addTarget(self, action: Selector("didTouchEditButton:"), forControlEvents: .TouchUpInside)
-        topBarView.addSubview(editButton)
+        menuBarView.addSubview(editButton)
         
         settingsButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         settingsButton.setTitle("Settings", forState: .Normal)
         settingsButton.addTarget(self, action: Selector("didTouchSettingsButton:"), forControlEvents: .TouchUpInside)
-        topBarView.addSubview(settingsButton)
+        menuBarView.addSubview(settingsButton)
         */
         
+        // Layout
+        textField.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
         let marginButtons: CGFloat = 5.0
-        var constraints = [NSLayoutConstraint]()
+        var constraints: [NSLayoutConstraint] = []
         
-        // Top bar
-        constraints += [NSLayoutConstraint(item: topBarView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 0.0)]
-        constraints += [NSLayoutConstraint(item: topBarView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0.0)]
-        constraints += [NSLayoutConstraint(item: topBarView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0.0)]
+        // Menu bar: bottom
+        constraints += [NSLayoutConstraint(item: menuBarView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1.0, constant: -barHeight)]
+        constraints += [NSLayoutConstraint(item: menuBarView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0.0)]
+        constraints += [NSLayoutConstraint(item: menuBarView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0.0)]
         view.addConstraints(constraints)
+
+        menuBarView.addConstraints([NSLayoutConstraint(item: menuBarView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: barHeight)])
         
+        // Tool bar: top
         constraints = []
-        constraints += [NSLayoutConstraint(item: topBarView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: topBarHeight)]
-        topBarView.addConstraints(constraints)
+        constraints += [NSLayoutConstraint(item: toolBarView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 0.0)]
+        constraints += [NSLayoutConstraint(item: toolBarView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0.0)]
+        constraints += [NSLayoutConstraint(item: toolBarView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0.0)]
+        view.addConstraints(constraints)
+
+        toolBarTopConstraint = NSLayoutConstraint(item: toolBarView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: barHeight)
+        toolBarView.addConstraint(toolBarTopConstraint)
+
         
         // Next keyboard button
         constraints = []
-        constraints += [NSLayoutConstraint(item: nextKeyboardButton, attribute: .Top, relatedBy: .Equal, toItem: topBarView, attribute: .Top, multiplier: 1.0, constant: marginButtons)]
-        constraints += [NSLayoutConstraint(item: nextKeyboardButton, attribute: .Left, relatedBy: .Equal, toItem: topBarView, attribute: .Left, multiplier: 1.0, constant: marginButtons)]
-        topBarView.addConstraints(constraints)
+        constraints += [NSLayoutConstraint(item: nextKeyboardButton, attribute: .Top, relatedBy: .Equal, toItem: menuBarView, attribute: .Top, multiplier: 1.0, constant: marginButtons)]
+        constraints += [NSLayoutConstraint(item: nextKeyboardButton, attribute: .Left, relatedBy: .Equal, toItem: menuBarView, attribute: .Left, multiplier: 1.0, constant: marginButtons)]
+        menuBarView.addConstraints(constraints)
         
         // Add button
         constraints = []
-        constraints += [NSLayoutConstraint(item: newStringButton, attribute: .Top, relatedBy: .Equal, toItem: topBarView, attribute: .Top, multiplier: 1.0, constant: marginButtons)]
+        constraints += [NSLayoutConstraint(item: newStringButton, attribute: .Top, relatedBy: .Equal, toItem: menuBarView, attribute: .Top, multiplier: 1.0, constant: marginButtons)]
         constraints += [NSLayoutConstraint(item: newStringButton, attribute: .Left, relatedBy: .Equal, toItem: nextKeyboardButton, attribute: .Right, multiplier: 1.0, constant: marginButtons)]
-        topBarView.addConstraints(constraints)
+        menuBarView.addConstraints(constraints)
         
+        /*
+        let views: [NSObject:AnyObject] = ["toolBar":toolBarView, "table":tableView, "menuBar":menuBarView]
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[toolBar]-[table]-[menuBar]-0@999-|", options: .allZeros, metrics: nil, views: views))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[table]|", options: .allZeros, metrics: nil, views: views))
+        */
         
-        // TableView
+        // Table View
         constraints = []
-        constraints += [NSLayoutConstraint(item: tableView, attribute: .Top, relatedBy: .Equal, toItem: topBarView, attribute: .Bottom, multiplier: 1.0, constant: 0)]
+        constraints += [NSLayoutConstraint(item: tableView, attribute: .Top, relatedBy: .Equal, toItem: toolBarView, attribute: .Bottom, multiplier: 1.0, constant: 0)]
         constraints += [NSLayoutConstraint(item: tableView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0)]
-        constraints += [NSLayoutConstraint(item: tableView, attribute: .Height, relatedBy: .Equal, toItem: view, attribute: .Height, multiplier: 1.0, constant: 0)]
         constraints += [NSLayoutConstraint(item: tableView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0)]
         view.addConstraints(constraints)
+        tableView.addConstraint(NSLayoutConstraint(item: tableView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: 100))
     }
     
 }
