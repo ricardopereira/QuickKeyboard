@@ -16,6 +16,8 @@
 		D7A3D6BC1B9436FE00534A21 /* QuickTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A3D6BB1B9436FE00534A21 /* QuickTests.swift */; };
 		D7A3D6CE1B9438E800534A21 /* KeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A3D6CD1B9438E800534A21 /* KeyboardViewController.swift */; };
 		D7A3D6D11B9438E800534A21 /* Keyboard.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = D7A3D6C91B9438E800534A21 /* Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D7E561B01B9C4E450033344C /* QuickString.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E561AF1B9C4E450033344C /* QuickString.swift */; };
+		D7E561B21B9C4ED60033344C /* KeyboardDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E561B11B9C4ED60033344C /* KeyboardDataSource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +68,8 @@
 		D7A3D6C91B9438E800534A21 /* Keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Keyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7A3D6CC1B9438E800534A21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D7A3D6CD1B9438E800534A21 /* KeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardViewController.swift; sourceTree = "<group>"; };
+		D7E561AF1B9C4E450033344C /* QuickString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickString.swift; sourceTree = "<group>"; };
+		D7E561B11B9C4ED60033344C /* KeyboardDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardDataSource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +179,8 @@
 			isa = PBXGroup;
 			children = (
 				D7A3D6CD1B9438E800534A21 /* KeyboardViewController.swift */,
+				D7E561B11B9C4ED60033344C /* KeyboardDataSource.swift */,
+				D7E561AF1B9C4E450033344C /* QuickString.swift */,
 				D7A3D6CB1B9438E800534A21 /* Supporting Files */,
 			);
 			path = Keyboard;
@@ -372,7 +378,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7E561B01B9C4E450033344C /* QuickString.swift in Sources */,
 				D7A3D6CE1B9438E800534A21 /* KeyboardViewController.swift in Sources */,
+				D7E561B21B9C4ED60033344C /* KeyboardDataSource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
