@@ -540,6 +540,7 @@
 				D7A3D6C11B9436FE00534A21 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D7A3D6C21B9436FE00534A21 /* Build configuration list for PBXNativeTarget "QuickTests" */ = {
 			isa = XCConfigurationList;
@@ -548,6 +549,7 @@
 				D7A3D6C41B9436FE00534A21 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D7A3D6D21B9438E800534A21 /* Build configuration list for PBXNativeTarget "Keyboard" */ = {
 			isa = XCConfigurationList;
@@ -556,6 +558,7 @@
 				D7A3D6D41B9438E800534A21 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

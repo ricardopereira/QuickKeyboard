@@ -24,8 +24,12 @@ class KeyboardViewController: UIInputViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dataSource.addString("ricardopereira.eu@gmail.com")
-        dataSource.addString("Bom dia")
+        dataSource.addString("Thank you")
+        dataSource.addString("very")
+        dataSource.addString("much")
+        dataSource.addString("for")
+        dataSource.addString("your")
+        dataSource.addString("help")
         
         tableView.delegate = self
         tableView.dataSource = dataSource
@@ -37,28 +41,33 @@ class KeyboardViewController: UIInputViewController {
         let topBarView = UIView(frame: CGRectMake(0, 0, self.view.frame.width, 24))
         topBarView.setTranslatesAutoresizingMaskIntoConstraints(false)
         topBarView.backgroundColor = UIColor.blueColor()
-        self.view.addSubview(topBarView)
+        view.addSubview(topBarView)
         
         var constraints = [NSLayoutConstraint]()
+        
         constraints += [NSLayoutConstraint(item: topBarView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 0.0)]
         constraints += [NSLayoutConstraint(item: topBarView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0.0)]
         constraints += [NSLayoutConstraint(item: topBarView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0.0)]
         view.addConstraints(constraints)
 
-        
         constraints = []
         constraints += [NSLayoutConstraint(item: topBarView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: 36.0)]
         topBarView.addConstraints(constraints)
-
+        
 
         constraints = []
-        constraints += [NSLayoutConstraint(item: tableView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 36.0)]
+        constraints += [NSLayoutConstraint(item: tableView, attribute: .Top, relatedBy: .Equal, toItem: topBarView, attribute: .Bottom, multiplier: 1.0, constant: 0)]
         constraints += [NSLayoutConstraint(item: tableView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0)]
-        constraints += [NSLayoutConstraint(item: tableView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: 180.0)]
+        constraints += [NSLayoutConstraint(item: tableView, attribute: .Height, relatedBy: .Equal, toItem: view, attribute: .Height, multiplier: 1.0, constant: 0)]
         constraints += [NSLayoutConstraint(item: tableView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0)]
         view.addConstraints(constraints)
         
         tableView.reloadData()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+
     }
 
     override func textWillChange(textInput: UITextInput) {
@@ -97,6 +106,9 @@ extension KeyboardViewController: UITableViewDelegate {
     }
     
     func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        cell.contentView.backgroundColor = UIColor.clearColor()
+        cell.backgroundColor = UIColor.clearColor()
+        
         cell.textLabel?.text = dataSource.items[indexPath.row]
     }
 
