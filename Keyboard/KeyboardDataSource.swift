@@ -33,8 +33,6 @@ class KeyboardDataSource: NSObject, UITableViewDataSource {
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            // Your delete code here
-            println("Delete")
             let realm = Realm()
             
             tableView.beginUpdates()

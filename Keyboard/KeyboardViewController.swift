@@ -19,10 +19,8 @@ class KeyboardViewController: UIInputViewController {
     // UI
     var toolBarView: UIView!
     var toolBarTopConstraint: NSLayoutConstraint!
-    let nextKeyboardButton = UIButton.buttonWithType(.Custom) as! UIButton
-    let newStringButton = UIButton.buttonWithType(.Custom) as! UIButton
-    let editButton = UIButton.buttonWithType(.Custom) as! UIButton
-    let settingsButton = UIButton.buttonWithType(.Custom) as! UIButton
+    let nextKeyboardButton = KeyboardKeyButton.buttonWithType(.System) as! KeyboardKeyButton
+    let newStringButton = KeyboardKeyButton.buttonWithType(.System) as! KeyboardKeyButton
     let textField = UITextField()
 
     override func updateViewConstraints() {
@@ -37,7 +35,6 @@ class KeyboardViewController: UIInputViewController {
         tableView.delegate = self
         tableView.dataSource = dataSource
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: KeyboardDataSource.CellIdentifier)
-        //tableView.setEditing(true, animated: true)
         
         setupUI()
         
@@ -93,10 +90,10 @@ class KeyboardViewController: UIInputViewController {
         advanceToNextInputMode()
     }
     
-    func didTouchNewButton(Sender: AnyObject) {
+    func didTouchNewStringButton(Sender: AnyObject) {
         println("didTouchNewButton")
         toolBarView.hidden = true
-        toolBarTopConstraint.constant = 36.0
+        toolBarTopConstraint.constant = 48.0
         
         let realm = Realm()
         
@@ -127,6 +124,9 @@ extension KeyboardViewController: UITableViewDelegate {
 
 }
 
+
+// MARK: - Layout
+
 extension KeyboardViewController {
     
     func setupUI() {
@@ -135,7 +135,7 @@ extension KeyboardViewController {
         view.addSubview(tableView)
         
         // Bars
-        let barHeight: CGFloat = 36.0
+        let barHeight: CGFloat = 48.0
         
         let menuBarView = UIView(frame: CGRectMake(0, 0, self.view.frame.width, barHeight))
         menuBarView.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -148,32 +148,24 @@ extension KeyboardViewController {
         view.addSubview(toolBarView)
         
         // Buttons
-        nextKeyboardButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        nextKeyboardButton.setTitle("Next keyboard", forState: .Normal)
+        nextKeyboardButton.setImage(UIImage(named: "Globe"), forState: .Normal)
         nextKeyboardButton.addTarget(self, action: Selector("didTouchNextKeyboardButton:"), forControlEvents: .TouchUpInside)
+        nextKeyboardButton.prepareForLayout()
+        nextKeyboardButton.setupKey()
         menuBarView.addSubview(nextKeyboardButton)
         
-        newStringButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        newStringButton.setTitle("New", forState: .Normal)
-        newStringButton.addTarget(self, action: Selector("didTouchNewButton:"), forControlEvents: .TouchUpInside)
+        newStringButton.setTitle("+", forState: .Normal)
+        newStringButton.addTarget(self, action: Selector("didTouchNewStringButton:"), forControlEvents: .TouchUpInside)
+        newStringButton.prepareForLayout()
+        newStringButton.setupKey()
         menuBarView.addSubview(newStringButton)
         
-        /*
-        editButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        editButton.setTitle("Edit", forState: .Normal)
-        editButton.addTarget(self, action: Selector("didTouchEditButton:"), forControlEvents: .TouchUpInside)
-        menuBarView.addSubview(editButton)
-        
-        settingsButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        settingsButton.setTitle("Settings", forState: .Normal)
-        settingsButton.addTarget(self, action: Selector("didTouchSettingsButton:"), forControlEvents: .TouchUpInside)
-        menuBarView.addSubview(settingsButton)
-        */
+        textField.setTranslatesAutoresizingMaskIntoConstraints(false)
+        toolBarView.addSubview(textField)
         
         // Layout
-        textField.setTranslatesAutoresizingMaskIntoConstraints(false)
-        
-        let marginButtons: CGFloat = 5.0
+        let marginButtons: CGFloat = 4.0
+        let buttonSize = CGSizeMake(40, 40)
         var constraints: [NSLayoutConstraint] = []
         
         // Menu bar: bottom
@@ -201,11 +193,15 @@ extension KeyboardViewController {
         constraints += [NSLayoutConstraint(item: nextKeyboardButton, attribute: .Left, relatedBy: .Equal, toItem: menuBarView, attribute: .Left, multiplier: 1.0, constant: marginButtons)]
         menuBarView.addConstraints(constraints)
         
-        // Add button
+        nextKeyboardButton.setLayout(buttonSize)
+        
+        // New String button
         constraints = []
         constraints += [NSLayoutConstraint(item: newStringButton, attribute: .Top, relatedBy: .Equal, toItem: menuBarView, attribute: .Top, multiplier: 1.0, constant: marginButtons)]
         constraints += [NSLayoutConstraint(item: newStringButton, attribute: .Left, relatedBy: .Equal, toItem: nextKeyboardButton, attribute: .Right, multiplier: 1.0, constant: marginButtons)]
         menuBarView.addConstraints(constraints)
+        
+        newStringButton.setLayout(buttonSize)
         
         /*
         let views: [NSObject:AnyObject] = ["toolBar":toolBarView, "table":tableView, "menuBar":menuBarView]
@@ -219,7 +215,7 @@ extension KeyboardViewController {
         constraints += [NSLayoutConstraint(item: tableView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0)]
         constraints += [NSLayoutConstraint(item: tableView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0)]
         view.addConstraints(constraints)
-        tableView.addConstraint(NSLayoutConstraint(item: tableView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: 100))
+        tableView.addConstraint(NSLayoutConstraint(item: tableView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: 120))
     }
     
 }
