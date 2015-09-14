@@ -17,20 +17,10 @@ class KeyboardViewController: UIInputViewController {
     var notificationToken: NotificationToken?
     
     // UI
-    var toolBarView: UIView!
     var menuBarView: UIView!
     // UI Interaction
     let nextKeyboardButton = KeyboardKeyButton.buttonWithType(.System) as! KeyboardKeyButton
     let newStringButton = KeyboardKeyButton.buttonWithType(.System) as! KeyboardKeyButton
-    let textField = UITextField()
-    // Constraints
-    var toolBarTopConstraint: NSLayoutConstraint!
-
-    override func updateViewConstraints() {
-        super.updateViewConstraints()
-    
-        // Add custom view sizing constraints here
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +31,21 @@ class KeyboardViewController: UIInputViewController {
         
         setupUI()
         
-        toolBarView.backgroundColor = UIColor.blueColor()
+        // Migration
+        let config = Realm.Configuration(schemaVersion: 1,
+            migrationBlock: { migration, oldSchemaVersion in
+                if (oldSchemaVersion < 1) {
+                    // https://realm.io/docs/swift/latest/api/Classes/Migration.html#/s:FC10RealmSwift9Migration10deleteDataFS0_FSSSb
+                    migration.deleteData(QuickString.className())
+                }
+        })
+        
+        // Tell Realm to use this new configuration object for the default Realm
+        Realm.Configuration.defaultConfiguration = config
+        
+        // Now that we've told Realm how to handle the schema change, opening the file
+        // will automatically perform the migration
+        let realm = Realm()
         
         // Set Realm notification block
         notificationToken = Realm().addNotificationBlock { [unowned self] note, realm in
@@ -49,6 +53,12 @@ class KeyboardViewController: UIInputViewController {
         }
         
         tableView.reloadData()
+    }
+    
+    override func updateViewConstraints() {
+        super.updateViewConstraints()
+        
+        // Add custom view sizing constraints here
     }
     
     deinit {
@@ -59,8 +69,8 @@ class KeyboardViewController: UIInputViewController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        toolBarView.hidden = true
-        toolBarTopConstraint.constant = 0
+        //toolBarView.hidden = true
+        //toolBarTopConstraint.constant = 0
         view.layoutIfNeeded()
     }
     
@@ -102,13 +112,17 @@ class KeyboardViewController: UIInputViewController {
     
     func didTouchNewStringButton(Sender: AnyObject) {
         println("didTouchNewButton")
-        toolBarView.hidden = true
-        toolBarTopConstraint.constant = 48.0
-        
-        let realm = Realm()
-        
-        realm.write {
-            realm.create(QuickString.self, value: ["ricardopereira.eu@gmail.com ", NSDate()])
+        if let newString = UIPasteboard.generalPasteboard().string {
+            let realm = Realm()
+            // Query using an NSPredicate
+            let predicate = NSPredicate(format: "value = %@", newString)
+            let result = realm.objects(QuickString).filter(predicate)
+            // Result
+            if result.count == 0 {
+                realm.write {
+                    realm.create(QuickString.self, value: [newString, NSDate()])
+                }
+            }
         }
     }
 
@@ -156,11 +170,6 @@ extension KeyboardViewController {
         menuBarView.backgroundColor = view.backgroundColor
         view.addSubview(menuBarView)
         
-        toolBarView = UIView(frame: CGRectMake(0, 0, self.view.frame.width, Constants.barHeight))
-        toolBarView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        toolBarView.backgroundColor = view.backgroundColor
-        view.addSubview(toolBarView)
-        
         // Buttons
         nextKeyboardButton.setImage(UIImage(named: "Globe"), forState: .Normal)
         nextKeyboardButton.addTarget(self, action: Selector("didTouchNextKeyboardButton:"), forControlEvents: .TouchUpInside)
@@ -173,10 +182,6 @@ extension KeyboardViewController {
         newStringButton.prepareForLayout()
         newStringButton.setupKey()
         menuBarView.addSubview(newStringButton)
-        
-        // Field
-        textField.setTranslatesAutoresizingMaskIntoConstraints(false)
-        toolBarView.addSubview(textField)
     }
     
     func layoutViews() {
@@ -192,24 +197,6 @@ extension KeyboardViewController {
         view.addConstraints(constraints)
         
         menuBarView.addConstraints([NSLayoutConstraint(item: menuBarView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: Constants.barHeight)])
-        
-        // Tool bar: top
-        constraints = []
-        constraints += [NSLayoutConstraint(item: toolBarView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 0.0)]
-        constraints += [NSLayoutConstraint(item: toolBarView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0.0)]
-        constraints += [NSLayoutConstraint(item: toolBarView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0.0)]
-        view.addConstraints(constraints)
-        
-        toolBarTopConstraint = NSLayoutConstraint(item: toolBarView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 1.0, constant: Constants.barHeight)
-        toolBarView.addConstraint(toolBarTopConstraint)
-        
-        // Field
-        constraints = []
-        constraints += [NSLayoutConstraint(item: textField, attribute: .Leading, relatedBy: .Equal, toItem: toolBarView, attribute: .Leading, multiplier: 1.0, constant: marginButtons)]
-        constraints += [NSLayoutConstraint(item: toolBarView, attribute: .Trailing, relatedBy: .Equal, toItem: textField, attribute: .Trailing, multiplier: 1.0, constant: marginButtons)]
-        constraints += [NSLayoutConstraint(item: textField, attribute: .Top, relatedBy: .Equal, toItem: toolBarView, attribute: .Top, multiplier: 1.0, constant: marginButtons)]
-        toolBarView.addConstraints(constraints)
-        textField.addConstraint(NSLayoutConstraint(item: textField, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .Height, multiplier: 0, constant: 28.0))
         
         // Next keyboard button
         constraints = []
@@ -235,7 +222,7 @@ extension KeyboardViewController {
         
         // Table View
         constraints = []
-        constraints += [NSLayoutConstraint(item: tableView, attribute: .Top, relatedBy: .Equal, toItem: toolBarView, attribute: .Bottom, multiplier: 1.0, constant: 0)]
+        constraints += [NSLayoutConstraint(item: tableView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 0)]
         constraints += [NSLayoutConstraint(item: tableView, attribute: .Right, relatedBy: .Equal, toItem: view, attribute: .Right, multiplier: 1.0, constant: 0)]
         constraints += [NSLayoutConstraint(item: tableView, attribute: .Left, relatedBy: .Equal, toItem: view, attribute: .Left, multiplier: 1.0, constant: 0)]
         view.addConstraints(constraints)

@@ -13,4 +13,8 @@ class QuickString: Object {
     dynamic var value = ""
     dynamic var date = NSDate()
     dynamic var lastUsed = NSDate()
+    
+    override static func primaryKey() -> String? {
+        return "value"
+    }
 }

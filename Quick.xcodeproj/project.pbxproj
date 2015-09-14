@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0BF80C876AB9224329787457 /* Pods_Keyboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B725D366A37A2D18196694E /* Pods_Keyboard.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		D72DD97A1BA4D07600884074 /* QuickEditStringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D72DD9791BA4D07600884074 /* QuickEditStringView.swift */; };
+		D72DD97E1BA4D0DD00884074 /* QuickEditStringView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D72DD97D1BA4D0DD00884074 /* QuickEditStringView.xib */; };
 		D7A3D6A61B9436FE00534A21 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A3D6A51B9436FE00534A21 /* AppDelegate.swift */; };
 		D7A3D6A81B9436FE00534A21 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A3D6A71B9436FE00534A21 /* ViewController.swift */; };
 		D7A3D6AB1B9436FE00534A21 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D7A3D6A91B9436FE00534A21 /* Main.storyboard */; };
@@ -57,6 +59,8 @@
 		2B725D366A37A2D18196694E /* Pods_Keyboard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Keyboard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		45C9035BA9471E15627DE081 /* Pods-Keyboard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Keyboard.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Keyboard/Pods-Keyboard.debug.xcconfig"; sourceTree = "<group>"; };
 		A61E3674C9A0009CF26AA950 /* Pods-Keyboard.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Keyboard.release.xcconfig"; path = "Pods/Target Support Files/Pods-Keyboard/Pods-Keyboard.release.xcconfig"; sourceTree = "<group>"; };
+		D72DD9791BA4D07600884074 /* QuickEditStringView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickEditStringView.swift; sourceTree = "<group>"; };
+		D72DD97D1BA4D0DD00884074 /* QuickEditStringView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = QuickEditStringView.xib; sourceTree = "<group>"; };
 		D7A3D6A01B9436FE00534A21 /* Quick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quick.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7A3D6A41B9436FE00534A21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D7A3D6A51B9436FE00534A21 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -185,6 +189,8 @@
 				D7A3D6CD1B9438E800534A21 /* KeyboardViewController.swift */,
 				D7DA1F391B9F95CE00C32E5A /* KeyboardKeyButton.swift */,
 				D7E561B11B9C4ED60033344C /* KeyboardDataSource.swift */,
+				D72DD9791BA4D07600884074 /* QuickEditStringView.swift */,
+				D72DD97D1BA4D0DD00884074 /* QuickEditStringView.xib */,
 				D7E561AF1B9C4E450033344C /* QuickString.swift */,
 				D7DA1F371B9F856000C32E5A /* Images.xcassets */,
 				D7A3D6CB1B9438E800534A21 /* Supporting Files */,
@@ -325,6 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7DA1F381B9F856000C32E5A /* Images.xcassets in Resources */,
+				D72DD97E1BA4D0DD00884074 /* QuickEditStringView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,6 +392,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D72DD97A1BA4D07600884074 /* QuickEditStringView.swift in Sources */,
 				D7DA1F3A1B9F95CE00C32E5A /* KeyboardKeyButton.swift in Sources */,
 				D7E561B01B9C4E450033344C /* QuickString.swift in Sources */,
 				D7A3D6CE1B9438E800534A21 /* KeyboardViewController.swift in Sources */,
